@@ -36,7 +36,9 @@ class ItemsController < ApplicationController
     @comment = Comment.new
     @comments = @item.comments.includes(:user)
     @search = Item.ransack(params[:q])
-    @like = Like.find_by(item_id: params[:id])
+    if user_signed_in?
+      @like = Like.find_by(user_id: current_user.id, item_id: params[:id])
+    end
     @parents = Category.where(ancestry:nil)
     @grandchild_id = @item.category_id
     @grandchild = Category.find(@grandchild_id)
